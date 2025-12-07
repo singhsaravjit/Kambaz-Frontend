@@ -94,7 +94,7 @@ export default function QuizQuestionsEditor({
 
       {questions.length === 0 ? (
         <div className="text-center p-5 border rounded">
-          <p className="text-muted">No questions yet. Click "+ New Question" to add a question.</p>
+          <p className="text-muted">No questions yet. Click &apos;+ New Question&apos; to add a question.</p>
         </div>
       ) : (
         <div>

@@ -84,7 +84,7 @@ export default function QuizEditor() {
   }
 
   if (!canEdit) {
-    return <div className="p-4">You don't have permission to edit this quiz.</div>;
+    return <div className="p-4">You don&apos;t have permission to edit this quiz.</div>;
   }
 
   const handleSave = async (updatedQuiz: any) => {

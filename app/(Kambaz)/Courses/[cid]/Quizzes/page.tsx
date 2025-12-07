@@ -193,7 +193,7 @@ export default function Quizzes() {
 
       {courseQuizzes.length === 0 ? (
         <div className="text-center p-5 border rounded">
-          <p className="text-muted">No quizzes yet. Click the "+ Quiz" button to add a new quiz.</p>
+          <p className="text-muted">No quizzes yet. Click the + Quiz button to add a new quiz.</p>
         </div>
       ) : (
         <div className="list-group">
@@ -339,7 +339,7 @@ export default function Quizzes() {
           <Modal.Title>Delete Quiz</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete "{quizToDelete?.title}"? This action cannot be undone.
+          Are you sure you want to delete &quot;{quizToDelete?.title}&quot;? This action cannot be undone.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCancelDelete}>
