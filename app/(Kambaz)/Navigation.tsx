@@ -100,6 +100,17 @@ export default function KambazNavigation() {
           </ListGroupItem>
         );
       })}
+
+      {/* Group Info Section */}
+      <ListGroupItem className="border-0 bg-black text-center mt-auto" style={{ position: 'absolute', bottom: '20px', width: '110px' }}>
+        <div className="text-white small">
+          <strong>Group 05</strong>
+          <br />
+          <span style={{ fontSize: '10px' }}>Dinesh Bachchani</span>
+          <br />
+          <span style={{ fontSize: '10px' }}>Saravjit Singh</span>
+        </div>
+      </ListGroupItem>
     </ListGroup>
   );
 }

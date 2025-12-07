@@ -165,10 +165,11 @@ export default function QuestionEditor({
               </Button>
             </div>
             {formData.choices.map((choice: any, index: number) => (
-              <div key={index} className="d-flex align-items-center mb-2">
+              <div key={`editor-choice-${question?._id}-${index}`} className="d-flex align-items-center mb-2">
                 <Form.Check
                   type="radio"
-                  name="correctChoice"
+                  id={`editor-mc-${question?._id}-choice-${index}`}
+                  name={`editor-correctChoice-${question?._id}`}
                   checked={choice.isCorrect}
                   onChange={() => handleCorrectChoiceChange(index)}
                   className="me-2"
@@ -201,8 +202,8 @@ export default function QuestionEditor({
               <div>
                 <Form.Check
                   type="radio"
-                  id="true-option"
-                  name="trueFalseAnswer"
+                  id={`editor-tf-${question?._id}-true`}
+                  name={`editor-trueFalseAnswer-${question?._id}`}
                   label="True"
                   checked={formData.correctAnswer === "True"}
                   onChange={() => handleChange("correctAnswer", "True")}
@@ -210,8 +211,8 @@ export default function QuestionEditor({
                 />
                 <Form.Check
                   type="radio"
-                  id="false-option"
-                  name="trueFalseAnswer"
+                  id={`editor-tf-${question?._id}-false`}
+                  name={`editor-trueFalseAnswer-${question?._id}`}
                   label="False"
                   checked={formData.correctAnswer === "False"}
                   onChange={() => handleChange("correctAnswer", "False")}

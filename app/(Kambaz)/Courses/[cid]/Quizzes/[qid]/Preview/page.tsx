@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button, Form, Card } from "react-bootstrap";
+import { Button, Form, Card, Alert } from "react-bootstrap";
 import * as coursesClient from "../../../../client";
 
 export default function QuizPreview() {
@@ -93,12 +93,16 @@ export default function QuizPreview() {
 
   const questions = quiz.questions || [];
   const currentQuestion = questions[currentQuestionIndex];
-  const oneQuestionAtATime = quiz.oneQuestionAtATime !== false;
+  // Fixed: oneQuestionAtATime should be true only when explicitly set to true
+  const oneQuestionAtATime = quiz.oneQuestionAtATime === true;
 
   if (submitted && result) {
     return (
       <div className="p-4">
-        <h2>Quiz Results</h2>
+        <Alert variant="warning" className="mb-4">
+          <strong>Preview Mode:</strong> This is a preview of the quiz. Student submissions are not saved.
+        </Alert>
+        <h2>Quiz Results (Preview)</h2>
         <div className="mb-4">
           <h3>
             Score: {result.score} / {result.totalPoints} ({result.percentage}%)
@@ -154,12 +158,28 @@ export default function QuizPreview() {
 
   return (
     <div className="p-4">
+      <Alert variant="warning" className="mb-4">
+        <strong>Preview Mode:</strong> This is a preview of the quiz as it will appear to students.
+      </Alert>
+      
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>{quiz.title} - Preview</h2>
         <Button variant="secondary" onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}`)}>
           Edit Quiz
         </Button>
       </div>
+
+      {/* Display quiz settings info */}
+      <Card className="mb-4 bg-light">
+        <Card.Body>
+          <small className="text-muted">
+            <strong>Quiz Settings:</strong> 
+            {quiz.hasTimeLimit !== false && quiz.timeLimit ? ` Time Limit: ${quiz.timeLimit} min |` : ' No Time Limit |'}
+            {oneQuestionAtATime ? ' One question at a time' : ' All questions at once'}
+            {quiz.lockQuestionsAfterAnswering ? ' | Questions lock after answering' : ''}
+          </small>
+        </Card.Body>
+      </Card>
 
       {oneQuestionAtATime ? (
         <div>
@@ -171,7 +191,7 @@ export default function QuizPreview() {
             <div className="d-flex flex-wrap gap-2">
               {questions.map((_: any, idx: number) => (
                 <Button
-                  key={idx}
+                  key={`preview-nav-${idx}`}
                   variant={idx === currentQuestionIndex ? "primary" : answers[questions[idx]._id] ? "success" : "outline-secondary"}
                   size="sm"
                   onClick={() => setCurrentQuestionIndex(idx)}
@@ -195,38 +215,47 @@ export default function QuizPreview() {
                 {currentQuestion.type === "Multiple Choice" && (
                   <div>
                     {currentQuestion.choices?.map((choice: any, idx: number) => (
-                      <Form.Check
-                        key={idx}
-                        type="radio"
-                        name={`question-${currentQuestion._id}`}
-                        label={choice.text}
-                        checked={answers[currentQuestion._id] === choice.text}
-                        onChange={() => handleAnswerChange(currentQuestion._id, choice.text)}
-                      />
+                      <div key={`preview-mc-${currentQuestion._id}-${idx}`} className="mb-2">
+                        <Form.Check
+                          type="radio"
+                          id={`preview-mc-${currentQuestion._id}-choice-${idx}`}
+                          name={`preview-question-mc-${currentQuestion._id}`}
+                          label={choice.text}
+                          checked={answers[currentQuestion._id] === choice.text}
+                          onChange={() => handleAnswerChange(currentQuestion._id, choice.text)}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
                 {currentQuestion.type === "True/False" && (
                   <div>
-                    <Form.Check
-                      type="radio"
-                      name={`question-${currentQuestion._id}`}
-                      label="True"
-                      checked={answers[currentQuestion._id] === "True"}
-                      onChange={() => handleAnswerChange(currentQuestion._id, "True")}
-                    />
-                    <Form.Check
-                      type="radio"
-                      name={`question-${currentQuestion._id}`}
-                      label="False"
-                      checked={answers[currentQuestion._id] === "False"}
-                      onChange={() => handleAnswerChange(currentQuestion._id, "False")}
-                    />
+                    <div className="mb-2">
+                      <Form.Check
+                        type="radio"
+                        id={`preview-tf-${currentQuestion._id}-true`}
+                        name={`preview-question-tf-${currentQuestion._id}`}
+                        label="True"
+                        checked={answers[currentQuestion._id] === "True"}
+                        onChange={() => handleAnswerChange(currentQuestion._id, "True")}
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <Form.Check
+                        type="radio"
+                        id={`preview-tf-${currentQuestion._id}-false`}
+                        name={`preview-question-tf-${currentQuestion._id}`}
+                        label="False"
+                        checked={answers[currentQuestion._id] === "False"}
+                        onChange={() => handleAnswerChange(currentQuestion._id, "False")}
+                      />
+                    </div>
                   </div>
                 )}
                 {currentQuestion.type === "Fill in the Blank" && (
                   <Form.Control
                     type="text"
+                    id={`preview-fib-${currentQuestion._id}`}
                     value={answers[currentQuestion._id] || ""}
                     onChange={(e) => handleAnswerChange(currentQuestion._id, e.target.value)}
                     placeholder="Enter your answer"
@@ -272,38 +301,47 @@ export default function QuizPreview() {
                 {question.type === "Multiple Choice" && (
                   <div>
                     {question.choices?.map((choice: any, idx: number) => (
-                      <Form.Check
-                        key={idx}
-                        type="radio"
-                        name={`question-${question._id}`}
-                        label={choice.text}
-                        checked={answers[question._id] === choice.text}
-                        onChange={() => handleAnswerChange(question._id, choice.text)}
-                      />
+                      <div key={`preview-all-mc-${question._id}-${idx}`} className="mb-2">
+                        <Form.Check
+                          type="radio"
+                          id={`preview-all-mc-${question._id}-choice-${idx}`}
+                          name={`preview-all-question-mc-${question._id}`}
+                          label={choice.text}
+                          checked={answers[question._id] === choice.text}
+                          onChange={() => handleAnswerChange(question._id, choice.text)}
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
                 {question.type === "True/False" && (
                   <div>
-                    <Form.Check
-                      type="radio"
-                      name={`question-${question._id}`}
-                      label="True"
-                      checked={answers[question._id] === "True"}
-                      onChange={() => handleAnswerChange(question._id, "True")}
-                    />
-                    <Form.Check
-                      type="radio"
-                      name={`question-${question._id}`}
-                      label="False"
-                      checked={answers[question._id] === "False"}
-                      onChange={() => handleAnswerChange(question._id, "False")}
-                    />
+                    <div className="mb-2">
+                      <Form.Check
+                        type="radio"
+                        id={`preview-all-tf-${question._id}-true`}
+                        name={`preview-all-question-tf-${question._id}`}
+                        label="True"
+                        checked={answers[question._id] === "True"}
+                        onChange={() => handleAnswerChange(question._id, "True")}
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <Form.Check
+                        type="radio"
+                        id={`preview-all-tf-${question._id}-false`}
+                        name={`preview-all-question-tf-${question._id}`}
+                        label="False"
+                        checked={answers[question._id] === "False"}
+                        onChange={() => handleAnswerChange(question._id, "False")}
+                      />
+                    </div>
                   </div>
                 )}
                 {question.type === "Fill in the Blank" && (
                   <Form.Control
                     type="text"
+                    id={`preview-all-fib-${question._id}`}
                     value={answers[question._id] || ""}
                     onChange={(e) => handleAnswerChange(question._id, e.target.value)}
                     placeholder="Enter your answer"
@@ -322,4 +360,3 @@ export default function QuizPreview() {
     </div>
   );
 }
-

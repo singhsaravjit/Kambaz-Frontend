@@ -18,6 +18,7 @@ export default function Breadcrumb({ course }: BreadcrumbProps) {
   
   
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const { quizzes } = useSelector((state: any) => state.quizzesReducer);
 
   const getCurrentSection = () => {
     
@@ -40,14 +41,23 @@ export default function Breadcrumb({ course }: BreadcrumbProps) {
       return 'Assignments';
     }
     
- 
     if (pathname.includes('/Quizzes')) {
       const segments = pathname.split('/');
       const quizIndex = segments.indexOf('Quizzes');
       const quizId = segments[quizIndex + 1];
       
       if (quizId) {
-        return `Quizzes > ${quizId}`;
+        const quiz = quizzes.find((q: any) => q._id === quizId);
+        const quizName = quizId === 'new' 
+          ? 'New Quiz' 
+          : (quiz?.title || 'Quiz Details');
+        
+        // Check if we're in a sub-page (Edit, Preview, Take)
+        const subPage = segments[quizIndex + 2];
+        if (subPage) {
+          return `Quizzes > ${quizName} > ${subPage}`;
+        }
+        return `Quizzes > ${quizName}`;
       }
       return 'Quizzes';
     }
