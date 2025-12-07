@@ -1,7 +1,7 @@
 "use client"
 import { AiOutlineDashboard } from "react-icons/ai";
 import { FaCalendarAlt } from "react-icons/fa";
-import { FaBook, FaFlask, FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import { FaBook, FaFlask, FaInbox, FaRegCircleUser, FaUserGroup } from "react-icons/fa6";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -103,13 +103,14 @@ export default function KambazNavigation() {
 
       {/* Group Info Section */}
       <ListGroupItem className="border-0 bg-black text-center mt-auto" style={{ position: 'absolute', bottom: '20px', width: '110px' }}>
-        <div className="text-white small">
-          <strong>Group 05</strong>
+        <Link 
+          href="/GroupDetail" 
+          className="text-white text-decoration-none"
+          onClick={() => setActiveButton("group")}>
+          <FaUserGroup className="fs-1 text-danger" />
           <br />
-          <span style={{ fontSize: '10px' }}>Dinesh Bachchani</span>
-          <br />
-          <span style={{ fontSize: '10px' }}>Saravjit Singh</span>
-        </div>
+          <span style={{ fontSize: '12px' }}>Group Detail</span>
+        </Link>
       </ListGroupItem>
     </ListGroup>
   );
